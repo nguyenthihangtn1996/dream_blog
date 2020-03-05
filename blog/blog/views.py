@@ -1,10 +1,32 @@
 from django.shortcuts import render
+from .models import Post
+from maketing.models import Signup
 
 def index(request):
-    return render(request, 'index.html', {})
+    queryset = Post.objects.filter(feature=True)
+    latest = Post.objects.order_by('-timestamp')[0:3]
+
+    if request.method == "POST":
+        email = request.POST["email"]
+        new_signup = Signup()
+        new_signup.email = email
+        new_signup.save()
+
+    context = {
+        'object_list' : queryset,
+        'latest': latest
+    }
+    return render(request, 'index.html', context )
 
 def blog(request):
-    return render(request, 'blog.html', {})
+    queryset = Post.objects.filter(feature=True)
+    latest = Post.objects.order_by('-timestamp')[0:3]
+
+    context = {
+        'object_list' : queryset,
+        'latest': latest
+    }
+    return render(request, 'blog.html', context)
 
 def post(request):
     return render(request, 'blog.html', {})
